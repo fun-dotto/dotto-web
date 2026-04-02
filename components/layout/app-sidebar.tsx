@@ -30,7 +30,16 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className="px-4 py-4">
-        <span className="text-lg font-bold tracking-tight">dotto</span>
+        <div className="flex items-center gap-2">
+          <Image
+            src="/icon1024.png"
+            alt="Dotto"
+            width={28}
+            height={28}
+            className="shrink-0"
+          />
+          <span className="text-lg font-bold tracking-tight">Dotto</span>
+        </div>
       </SidebarHeader>
 
       <SidebarContent>
