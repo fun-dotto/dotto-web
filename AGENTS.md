@@ -1,6 +1,7 @@
 # ツール
 
 - chrome-devtools
+  - http://localhost:3000 で起動されている開発用サーバーを使ってデバッグすること。
 - dotto-figma
   - Figmaのリンクが提供されたときには、MCPを使用してアクセスすること。
 - dotto-notion
