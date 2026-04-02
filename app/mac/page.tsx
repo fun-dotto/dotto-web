@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { getMacPages } from "@/lib/notion";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Mac サポート",
   description: "Mac サポートページ一覧",

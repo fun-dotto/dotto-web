@@ -2,8 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
-import { getPage, getPageBlocks, getMacPages } from "@/lib/notion";
+import { getPage, getPageBlocks } from "@/lib/notion";
 import { NotionRenderer } from "@/components/notion/NotionRenderer";
+
+export const dynamic = "force-dynamic";
 
 function getTitle(page: PageObjectResponse): string {
   const prop = page.properties["ページ"];
@@ -31,11 +33,6 @@ function getLastEdited(page: PageObjectResponse): string {
     });
   }
   return "";
-}
-
-export async function generateStaticParams() {
-  const pages = await getMacPages();
-  return pages.map((page) => ({ pageId: page.id.replace(/-/g, "") }));
 }
 
 export async function generateMetadata({
