@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { getPage, getPageBlocks, getMacPages } from "@/lib/notion";
 import { NotionRenderer } from "@/components/notion/NotionRenderer";
-import { Badge } from "@/components/ui/badge";
 
 function getTitle(page: PageObjectResponse): string {
   const prop = page.properties["ページ"];
@@ -74,35 +73,45 @@ export default async function MacDetailPage({
 
   return (
     <div>
-      <div className="mb-8">
+      {/* Header */}
+      <div className="bg-background-tertiary -mx-6 -mt-6 px-6 pt-6 pb-8 mb-8">
         <Link
           href="/mac"
-          className="mb-4 -ml-2 inline-flex items-center rounded-lg px-2 py-1 text-sm text-label-secondary hover:bg-background-secondary hover:text-label-primary"
+          className="group inline-flex items-center gap-1.5 text-xs text-label-tertiary/50 hover:text-label-tertiary/80 transition-colors duration-200 mb-6"
         >
-          ← 一覧に戻る
+          <span className="group-hover:-translate-x-0.5 transition-transform duration-200 inline-block">
+            ←
+          </span>
+          <span>Mac サポート</span>
         </Link>
 
-        <h1 className="mb-3 text-3xl font-bold tracking-tight text-label-primary">
+        <h1 className="text-4xl font-bold tracking-tight text-label-tertiary leading-tight mb-4">
           {title}
         </h1>
 
         <div className="flex flex-wrap items-center gap-2">
           {tags.map((tag) => (
-            <Badge key={tag} variant="secondary">
+            <span
+              key={tag}
+              className="text-xs px-2.5 py-0.5 rounded-full border border-label-tertiary/20 text-label-tertiary/60"
+            >
               {tag}
-            </Badge>
+            </span>
           ))}
           {lastEdited && (
-            <span className="text-sm text-label-secondary">
-              最終更新: {lastEdited}
+            <span className="text-xs text-label-tertiary/40 tabular-nums">
+              {lastEdited} 更新
             </span>
           )}
         </div>
       </div>
 
-      <div className="rounded-xl bg-background-secondary p-8 shadow-sm border border-border-primary">
+      {/* Content */}
+      <div className="bg-background-secondary rounded-xl border border-border-primary p-8">
         {blocks.length === 0 ? (
-          <p className="text-center text-label-secondary">コンテンツがありません</p>
+          <p className="text-center text-label-secondary text-sm py-8">
+            コンテンツがありません
+          </p>
         ) : (
           <NotionRenderer blocks={blocks} />
         )}
