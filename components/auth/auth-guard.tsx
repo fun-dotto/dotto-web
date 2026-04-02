@@ -40,7 +40,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
         <header className="flex h-12 items-center px-4 border-b border-border-primary">
           <SidebarTrigger />
         </header>
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 p-6 bg-background-primary">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );
