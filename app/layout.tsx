@@ -1,5 +1,6 @@
 import { AuthProvider } from "@/contexts/auth-context";
 import { AuthGuard } from "@/components/auth/auth-guard";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
@@ -25,9 +26,11 @@ export default function RootLayout({
       className={`${notoSansJP.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-          <AuthProvider>
-            <AuthGuard>{children}</AuthGuard>
-          </AuthProvider>
+          <TooltipProvider>
+            <AuthProvider>
+              <AuthGuard>{children}</AuthGuard>
+            </AuthProvider>
+          </TooltipProvider>
         </body>
     </html>
   );
