@@ -1,4 +1,5 @@
 import { AuthProvider } from "@/contexts/auth-context";
+import { AuthGuard } from "@/components/auth/auth-guard";
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
@@ -24,7 +25,9 @@ export default function RootLayout({
       className={`${notoSansJP.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <AuthGuard>{children}</AuthGuard>
+          </AuthProvider>
         </body>
     </html>
   );
