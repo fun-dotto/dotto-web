@@ -73,41 +73,39 @@ export default async function MacDetailPage({
   const lastEdited = getLastEdited(page);
 
   return (
-    <div className="min-h-screen bg-background-primary">
-      <div className="mx-auto max-w-3xl px-4 py-12">
-        <div className="mb-8">
-          <Link
-            href="/mac"
-            className="mb-4 -ml-2 inline-flex items-center rounded-lg px-2 py-1 text-sm text-label-secondary hover:bg-background-primary hover:text-label-primary"
-          >
-            ← 一覧に戻る
-          </Link>
+    <div>
+      <div className="mb-8">
+        <Link
+          href="/mac"
+          className="mb-4 -ml-2 inline-flex items-center rounded-lg px-2 py-1 text-sm text-label-secondary hover:bg-background-secondary hover:text-label-primary"
+        >
+          ← 一覧に戻る
+        </Link>
 
-          <h1 className="mb-3 text-3xl font-bold tracking-tight text-label-primary">
-            {title}
-          </h1>
+        <h1 className="mb-3 text-3xl font-bold tracking-tight text-label-primary">
+          {title}
+        </h1>
 
-          <div className="flex flex-wrap items-center gap-2">
-            {tags.map((tag) => (
-              <Badge key={tag} variant="secondary">
-                {tag}
-              </Badge>
-            ))}
-            {lastEdited && (
-              <span className="text-sm text-label-secondary">
-                最終更新: {lastEdited}
-              </span>
-            )}
-          </div>
-        </div>
-
-        <div className="rounded-xl bg-background-secondary p-8 shadow-sm border border-border-primary">
-          {blocks.length === 0 ? (
-            <p className="text-center text-label-secondary">コンテンツがありません</p>
-          ) : (
-            <NotionRenderer blocks={blocks} />
+        <div className="flex flex-wrap items-center gap-2">
+          {tags.map((tag) => (
+            <Badge key={tag} variant="secondary">
+              {tag}
+            </Badge>
+          ))}
+          {lastEdited && (
+            <span className="text-sm text-label-secondary">
+              最終更新: {lastEdited}
+            </span>
           )}
         </div>
+      </div>
+
+      <div className="rounded-xl bg-background-secondary p-8 shadow-sm border border-border-primary">
+        {blocks.length === 0 ? (
+          <p className="text-center text-label-secondary">コンテンツがありません</p>
+        ) : (
+          <NotionRenderer blocks={blocks} />
+        )}
       </div>
     </div>
   );
