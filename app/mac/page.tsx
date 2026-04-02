@@ -1,40 +1,16 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { getMacPages } from "@/lib/notion";
+import {
+  getMacPageLastEdited,
+  getMacPageTags,
+  getMacPageTitle,
+} from "@/lib/mac-support";
 
 export const metadata: Metadata = {
   title: "Mac サポート",
   description: "Mac サポートページ一覧",
 };
-
-function getTitle(page: PageObjectResponse): string {
-  const prop = page.properties["ページ"];
-  if (prop?.type === "title") {
-    return prop.title.map((t) => t.plain_text).join("") || "無題";
-  }
-  return "無題";
-}
-
-function getTags(page: PageObjectResponse): string[] {
-  const prop = page.properties["タグ"];
-  if (prop?.type === "multi_select") {
-    return prop.multi_select.map((s) => s.name);
-  }
-  return [];
-}
-
-function getLastEdited(page: PageObjectResponse): string {
-  const prop = page.properties["最終更新日時"];
-  if (prop?.type === "last_edited_time") {
-    return new Date(prop.last_edited_time).toLocaleDateString("ja-JP", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  }
-  return "";
-}
 
 export default async function MacPage() {
   const pages = await getMacPages();
@@ -64,9 +40,9 @@ export default async function MacPage() {
       ) : (
         <ul className="divide-y divide-border-primary">
           {pages.map((page, index) => {
-            const title = getTitle(page);
-            const tags = getTags(page);
-            const lastEdited = getLastEdited(page);
+            const title = getMacPageTitle(page);
+            const tags = getMacPageTags(page);
+            const lastEdited = getMacPageLastEdited(page);
             const pageId = page.id.replace(/-/g, "");
 
             return (
