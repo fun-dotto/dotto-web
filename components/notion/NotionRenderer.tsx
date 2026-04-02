@@ -12,7 +12,7 @@ function RichText({ items }: { items: RichTextItemResponse[] }) {
 
         if (annotations.code) {
           node = (
-            <code className="rounded bg-zinc-100 px-1 py-0.5 font-mono text-sm dark:bg-zinc-800">
+            <code className="rounded bg-background-primary px-1 py-0.5 font-mono text-sm text-label-primary">
               {node}
             </code>
           );
@@ -27,7 +27,7 @@ function RichText({ items }: { items: RichTextItemResponse[] }) {
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 underline hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+              className="text-accent-info underline hover:opacity-80"
             >
               {node}
             </a>
@@ -51,42 +51,42 @@ export function NotionBlock({ block }: { block: BlockObjectResponse }) {
   switch (block.type) {
     case "paragraph":
       return (
-        <p className="mb-4 leading-7 text-zinc-700 dark:text-zinc-300">
+        <p className="mb-4 leading-7 text-label-secondary">
           <RichText items={block.paragraph.rich_text} />
         </p>
       );
 
     case "heading_1":
       return (
-        <h1 className="mb-4 mt-8 text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h1 className="mb-4 mt-8 text-3xl font-bold tracking-tight text-label-primary">
           <RichText items={block.heading_1.rich_text} />
         </h1>
       );
 
     case "heading_2":
       return (
-        <h2 className="mb-3 mt-6 text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h2 className="mb-3 mt-6 text-2xl font-semibold tracking-tight text-label-primary">
           <RichText items={block.heading_2.rich_text} />
         </h2>
       );
 
     case "heading_3":
       return (
-        <h3 className="mb-2 mt-5 text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h3 className="mb-2 mt-5 text-xl font-semibold text-label-primary">
           <RichText items={block.heading_3.rich_text} />
         </h3>
       );
 
     case "bulleted_list_item":
       return (
-        <li className="mb-1 ml-4 list-disc leading-7 text-zinc-700 dark:text-zinc-300">
+        <li className="mb-1 ml-4 list-disc leading-7 text-label-secondary">
           <RichText items={block.bulleted_list_item.rich_text} />
         </li>
       );
 
     case "numbered_list_item":
       return (
-        <li className="mb-1 ml-4 list-decimal leading-7 text-zinc-700 dark:text-zinc-300">
+        <li className="mb-1 ml-4 list-decimal leading-7 text-label-secondary">
           <RichText items={block.numbered_list_item.rich_text} />
         </li>
       );
@@ -98,10 +98,10 @@ export function NotionBlock({ block }: { block: BlockObjectResponse }) {
             type="checkbox"
             checked={block.to_do.checked ?? false}
             readOnly
-            className="mt-1 h-4 w-4 rounded border-zinc-300"
+            className="mt-1 h-4 w-4 rounded border-border-primary"
           />
           <span
-            className={`leading-7 text-zinc-700 dark:text-zinc-300 ${block.to_do.checked ? "line-through opacity-60" : ""}`}
+            className={`leading-7 text-label-secondary ${block.to_do.checked ? "line-through opacity-60" : ""}`}
           >
             <RichText items={block.to_do.rich_text} />
           </span>
@@ -110,18 +110,18 @@ export function NotionBlock({ block }: { block: BlockObjectResponse }) {
 
     case "quote":
       return (
-        <blockquote className="mb-4 border-l-4 border-zinc-300 pl-4 italic text-zinc-600 dark:border-zinc-600 dark:text-zinc-400">
+        <blockquote className="mb-4 border-l-4 border-border-primary pl-4 italic text-label-secondary">
           <RichText items={block.quote.rich_text} />
         </blockquote>
       );
 
     case "callout":
       return (
-        <div className="mb-4 flex gap-3 rounded-lg bg-zinc-100 p-4 dark:bg-zinc-800">
+        <div className="mb-4 flex gap-3 rounded-lg bg-background-primary border border-border-primary p-4">
           {block.callout.icon && block.callout.icon.type === "emoji" && (
             <span className="text-xl">{block.callout.icon.emoji}</span>
           )}
-          <div className="leading-7 text-zinc-700 dark:text-zinc-300">
+          <div className="leading-7 text-label-secondary">
             <RichText items={block.callout.rich_text} />
           </div>
         </div>
@@ -130,11 +130,11 @@ export function NotionBlock({ block }: { block: BlockObjectResponse }) {
     case "code":
       return (
         <div className="mb-4">
-          <pre className="overflow-x-auto rounded-lg bg-zinc-900 p-4 text-sm text-zinc-100">
+          <pre className="overflow-x-auto rounded-lg bg-background-tertiary p-4 text-sm text-label-tertiary">
             <code>{block.code.rich_text.map((t) => t.plain_text).join("")}</code>
           </pre>
           {block.code.caption.length > 0 && (
-            <p className="mt-1 text-sm text-zinc-500">
+            <p className="mt-1 text-sm text-label-secondary">
               <RichText items={block.code.caption} />
             </p>
           )}
@@ -152,7 +152,7 @@ export function NotionBlock({ block }: { block: BlockObjectResponse }) {
             className="w-full rounded-lg"
           />
           {block.image.caption.length > 0 && (
-            <figcaption className="mt-2 text-center text-sm text-zinc-500">
+            <figcaption className="mt-2 text-center text-sm text-label-secondary">
               <RichText items={block.image.caption} />
             </figcaption>
           )}
@@ -161,12 +161,12 @@ export function NotionBlock({ block }: { block: BlockObjectResponse }) {
     }
 
     case "divider":
-      return <hr className="my-6 border-zinc-200 dark:border-zinc-700" />;
+      return <hr className="my-6 border-border-primary" />;
 
     case "toggle":
       return (
         <details className="mb-4">
-          <summary className="cursor-pointer font-medium text-zinc-900 dark:text-zinc-50">
+          <summary className="cursor-pointer font-medium text-label-primary">
             <RichText items={block.toggle.rich_text} />
           </summary>
         </details>

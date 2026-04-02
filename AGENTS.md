@@ -12,6 +12,13 @@
 
 - DRY 原則を遵守する
 - SOLID 原則を遵守する
+- カラーは必ず Figma デザインシステムで定義されたセマンティックカラーを使用すること。
+  - `text-label-primary` / `text-label-secondary` / `text-label-tertiary`
+  - `bg-background-primary` / `bg-background-secondary` / `bg-background-tertiary` / `bg-background-quaternary`
+  - `border-border-primary`
+  - `text-accent-info` / `bg-accent-info`
+  - `text-accent-error` / `bg-accent-error`
+  - zinc・gray・slate などの汎用カラーは使用しないこと。
 - 可能な限り、package.json に定義されたscriptsを使用すること。
   - よく使うコマンドが定義されていない場合は、追加を提案すること。
 - コミット

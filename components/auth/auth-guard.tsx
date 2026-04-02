@@ -19,8 +19,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 rounded-full border-2 border-gray-300 border-t-gray-700 animate-spin" />
+      <div className="flex min-h-screen items-center justify-center bg-background-primary">
+        <div className="h-8 w-8 rounded-full border-2 border-border-primary border-t-label-primary animate-spin" />
       </div>
     );
   }
@@ -37,7 +37,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-12 items-center px-4 border-b">
+        <header className="flex h-12 items-center px-4 border-b border-border-primary">
           <SidebarTrigger />
         </header>
         <main className="flex-1 p-6">{children}</main>

@@ -47,17 +47,17 @@ export default async function MacPage() {
   const pages = await getMacPages();
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen bg-background-primary">
       <div className="mx-auto max-w-3xl px-4 py-12">
-        <h1 className="mb-2 text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h1 className="mb-2 text-3xl font-bold tracking-tight text-label-primary">
           Mac サポート
         </h1>
-        <p className="mb-8 text-zinc-500 dark:text-zinc-400">
+        <p className="mb-8 text-label-secondary">
           {pages.length} 件のページ
         </p>
 
         {pages.length === 0 ? (
-          <p className="text-center text-zinc-500">ページがありません</p>
+          <p className="text-center text-label-secondary">ページがありません</p>
         ) : (
           <ul className="space-y-4">
             {pages.map((page) => {
@@ -71,7 +71,7 @@ export default async function MacPage() {
                   <Link href={`/mac/${pageId}`} className="block">
                     <Card className="transition-shadow hover:shadow-md">
                       <CardHeader>
-                        <CardTitle className="text-lg">{title}</CardTitle>
+                        <CardTitle className="text-lg text-label-primary">{title}</CardTitle>
                         <CardDescription className="flex flex-wrap items-center gap-2">
                           {tags.map((tag) => (
                             <Badge key={tag} variant="secondary">
@@ -79,7 +79,7 @@ export default async function MacPage() {
                             </Badge>
                           ))}
                           {lastEdited && (
-                            <span className="text-xs text-zinc-400">
+                            <span className="text-xs text-label-secondary">
                               {lastEdited}
                             </span>
                           )}

@@ -17,23 +17,23 @@ export default function SignInPage() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 rounded-full border-2 border-gray-300 border-t-gray-700 animate-spin" />
+        <div className="h-8 w-8 rounded-full border-2 border-border-primary border-t-label-primary animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50">
-      <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
-        <h1 className="mb-2 text-center text-2xl font-bold text-gray-900">
+    <div className="flex min-h-screen items-center justify-center bg-background-primary">
+      <div className="w-full max-w-sm rounded-2xl bg-background-secondary p-8 shadow-sm border border-border-primary">
+        <h1 className="mb-2 text-center text-2xl font-bold text-label-primary">
           サインイン
         </h1>
-        <p className="mb-8 text-center text-sm text-gray-500">
+        <p className="mb-8 text-center text-sm text-label-secondary">
           続行するにはサインインしてください
         </p>
         <button
           onClick={signInWithGoogle}
-          className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-colors"
+          className="flex w-full items-center justify-center gap-3 rounded-lg border border-border-primary bg-background-secondary px-4 py-3 text-sm font-medium text-label-secondary shadow-sm hover:bg-background-primary transition-colors"
         >
           <svg viewBox="0 0 24 24" width="18" height="18">
             <path

@@ -73,17 +73,17 @@ export default async function MacDetailPage({
   const lastEdited = getLastEdited(page);
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen bg-background-primary">
       <div className="mx-auto max-w-3xl px-4 py-12">
         <div className="mb-8">
           <Link
             href="/mac"
-            className="mb-4 -ml-2 inline-flex items-center rounded-lg px-2 py-1 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
+            className="mb-4 -ml-2 inline-flex items-center rounded-lg px-2 py-1 text-sm text-label-secondary hover:bg-background-primary hover:text-label-primary"
           >
             ← 一覧に戻る
           </Link>
 
-          <h1 className="mb-3 text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+          <h1 className="mb-3 text-3xl font-bold tracking-tight text-label-primary">
             {title}
           </h1>
 
@@ -94,16 +94,16 @@ export default async function MacDetailPage({
               </Badge>
             ))}
             {lastEdited && (
-              <span className="text-sm text-zinc-400">
+              <span className="text-sm text-label-secondary">
                 最終更新: {lastEdited}
               </span>
             )}
           </div>
         </div>
 
-        <div className="rounded-xl bg-white p-8 shadow-sm dark:bg-zinc-900">
+        <div className="rounded-xl bg-background-secondary p-8 shadow-sm border border-border-primary">
           {blocks.length === 0 ? (
-            <p className="text-center text-zinc-400">コンテンツがありません</p>
+            <p className="text-center text-label-secondary">コンテンツがありません</p>
           ) : (
             <NotionRenderer blocks={blocks} />
           )}
