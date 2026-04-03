@@ -17,6 +17,7 @@ import { HomeIcon, MonitorIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import DottoIcon from "@/app/icon1024.png";
 
 const navItems = [
   { title: "ホーム", href: "/", icon: HomeIcon },
@@ -32,7 +33,7 @@ export function AppSidebar() {
       <SidebarHeader className="px-4 py-4">
         <div className="flex items-center gap-2">
           <Image
-            src="/icon1024.png"
+            src={ DottoIcon }
             alt="Dotto"
             width={28}
             height={28}
