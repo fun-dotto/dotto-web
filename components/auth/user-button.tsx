@@ -16,7 +16,7 @@ export function UserButton() {
   if (!user) {
     return (
       <Link
-        href="/sign-in"
+        href="/login"
         className="text-sm font-medium text-gray-700 hover:text-gray-900"
       >
         サインイン
