@@ -27,12 +27,12 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET") return;
 
   if (isMacNavigationRequest(request)) {
-    event.respondWith(cacheFirstNavigation(request));
+    event.respondWith(networkFirstNavigation(request));
     return;
   }
 
   if (isCacheableStaticAssetRequest(request)) {
-    event.respondWith(staleWhileRevalidate(request));
+    event.respondWith(networkFirstStaticAsset(request));
   }
 });
 
@@ -54,12 +54,8 @@ function isCacheableStaticAssetRequest(request) {
   return ["script", "style", "font", "image"].includes(request.destination);
 }
 
-async function cacheFirstNavigation(request) {
+async function networkFirstNavigation(request) {
   const cache = await caches.open(MAC_DOCUMENT_CACHE);
-  const cached = await cache.match(request);
-  if (cached) {
-    return cached;
-  }
 
   try {
     const response = await fetch(request);
@@ -68,6 +64,10 @@ async function cacheFirstNavigation(request) {
     }
     return response;
   } catch {
+    const cached = await cache.match(request);
+    if (cached) {
+      return cached;
+    }
     return new Response("オフラインです。接続後に再試行してください。", {
       status: 503,
       headers: { "Content-Type": "text/plain; charset=UTF-8" },
@@ -75,27 +75,20 @@ async function cacheFirstNavigation(request) {
   }
 }
 
-async function staleWhileRevalidate(request) {
+async function networkFirstStaticAsset(request) {
   const cache = await caches.open(STATIC_ASSET_CACHE);
-  const cached = await cache.match(request);
 
-  const networkResponsePromise = fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        void cache.put(request, response.clone());
-      }
-      return response;
-    })
-    .catch(() => null);
-
-  if (cached) {
-    return cached;
+  try {
+    const response = await fetch(request);
+    if (response.ok) {
+      await cache.put(request, response.clone());
+    }
+    return response;
+  } catch {
+    const cached = await cache.match(request);
+    if (cached) {
+      return cached;
+    }
+    return new Response("", { status: 504 });
   }
-
-  const networkResponse = await networkResponsePromise;
-  if (networkResponse) {
-    return networkResponse;
-  }
-
-  return new Response("", { status: 504 });
 }
