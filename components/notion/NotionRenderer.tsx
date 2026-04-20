@@ -4,6 +4,7 @@ import type {
   RichTextItemResponse,
 } from "@notionhq/client/build/src/api-endpoints";
 import { CopyableHeading } from "./CopyableHeading";
+import { CopyCodeButton } from "./CopyCodeButton";
 
 function normalizeNotionPageId(raw: string): string {
   const hex = raw.replace(/-/g, "").toLowerCase();
@@ -191,12 +192,16 @@ export function NotionBlock({ block }: { block: BlockObjectResponse }) {
         </div>
       );
 
-    case "code":
+    case "code": {
+      const codeText = block.code.rich_text.map((t) => t.plain_text).join("");
       return (
         <div className="mb-4">
-          <pre className="overflow-x-auto rounded-lg bg-background-tertiary p-4 text-sm text-label-tertiary">
-            <code>{block.code.rich_text.map((t) => t.plain_text).join("")}</code>
-          </pre>
+          <div className="group relative">
+            <pre className="overflow-x-auto rounded-lg bg-background-tertiary p-4 text-sm text-label-tertiary">
+              <code>{codeText}</code>
+            </pre>
+            <CopyCodeButton code={codeText} />
+          </div>
           {block.code.caption.length > 0 && (
             <p className="mt-1 text-sm text-label-secondary">
               <RichText items={block.code.caption} />
@@ -204,6 +209,7 @@ export function NotionBlock({ block }: { block: BlockObjectResponse }) {
           )}
         </div>
       );
+    }
 
     case "image": {
       const url = getImageUrl(block.image);
