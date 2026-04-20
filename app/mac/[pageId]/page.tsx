@@ -25,16 +25,28 @@ function getTags(page: PageObjectResponse): string[] {
   return [];
 }
 
-function getLastEdited(page: PageObjectResponse): string {
+function formatDate(date: Date): string {
+  return date.toLocaleDateString("ja-JP", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+function getCreatedAtDate(page: PageObjectResponse): Date | null {
+  const prop = page.properties["公開開始日時"];
+  if (prop?.type === "date" && prop.date?.start) {
+    return new Date(prop.date.start);
+  }
+  return null;
+}
+
+function getLastEditedDate(page: PageObjectResponse): Date | null {
   const prop = page.properties["最終更新日時"];
   if (prop?.type === "last_edited_time") {
-    return new Date(prop.last_edited_time).toLocaleDateString("ja-JP", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    return new Date(prop.last_edited_time);
   }
-  return "";
+  return null;
 }
 
 export async function generateMetadata({
@@ -68,7 +80,13 @@ export default async function MacDetailPage({
   const blocks = await getPageBlocks(pageId);
   const title = getTitle(page);
   const tags = getTags(page);
-  const lastEdited = getLastEdited(page);
+  const createdAtDate = getCreatedAtDate(page);
+  const lastEditedDate = getLastEditedDate(page);
+  const createdAt = createdAtDate ? formatDate(createdAtDate) : "";
+  const lastEdited =
+    lastEditedDate && (!createdAtDate || lastEditedDate >= createdAtDate)
+      ? formatDate(lastEditedDate)
+      : "";
 
   return (
     <div>
@@ -102,6 +120,11 @@ export default async function MacDetailPage({
               {tag}
             </span>
           ))}
+          {createdAt && (
+            <span className="text-xs text-label-tertiary/40 tabular-nums">
+              {createdAt} 作成
+            </span>
+          )}
           {lastEdited && (
             <span className="text-xs text-label-tertiary/40 tabular-nums">
               {lastEdited} 更新
