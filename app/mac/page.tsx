@@ -26,20 +26,41 @@ function getTags(page: PageObjectResponse): string[] {
   return [];
 }
 
-function getLastEdited(page: PageObjectResponse): string {
-  const prop = page.properties["最終更新日時"];
-  if (prop?.type === "last_edited_time") {
-    return new Date(prop.last_edited_time).toLocaleDateString("ja-JP", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+function getDateStart(page: PageObjectResponse, name: string): Date | null {
+  const prop = page.properties[name];
+  if (prop?.type === "date" && prop.date?.start) {
+    return new Date(prop.date.start);
   }
-  return "";
+  return null;
+}
+
+function isPublished(page: PageObjectResponse, now: Date): boolean {
+  const start = getDateStart(page, "公開開始日時");
+  const end = getDateStart(page, "公開終了日時");
+  if (!start || start > now) return false;
+  if (end && end <= now) return false;
+  return true;
+}
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString("ja-JP", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 }
 
 export default async function MacPage() {
-  const pages = await getMacPages();
+  const allPages = await getMacPages();
+  const filtered =
+    process.env.NODE_ENV === "development"
+      ? allPages
+      : allPages.filter((p) => isPublished(p, new Date()));
+  const pages = [...filtered].sort((a, b) => {
+    const aStart = getDateStart(a, "公開開始日時")?.getTime() ?? 0;
+    const bStart = getDateStart(b, "公開開始日時")?.getTime() ?? 0;
+    return bStart - aStart;
+  });
 
   return (
     <div>
@@ -65,10 +86,21 @@ export default async function MacPage() {
         </div>
       ) : (
         <ul className="divide-y divide-border-primary">
-          {pages.map((page, index) => {
+          {pages.map((page) => {
             const title = getTitle(page);
             const tags = getTags(page);
-            const lastEdited = getLastEdited(page);
+            const createdAtDate = getDateStart(page, "公開開始日時");
+            const createdAt = createdAtDate ? formatDate(createdAtDate) : "";
+            const lastEditedProp = page.properties["最終更新日時"];
+            const lastEditedDate =
+              lastEditedProp?.type === "last_edited_time"
+                ? new Date(lastEditedProp.last_edited_time)
+                : null;
+            const lastEdited =
+              lastEditedDate &&
+              (!createdAtDate || lastEditedDate >= createdAtDate)
+                ? formatDate(lastEditedDate)
+                : "";
             const pageId = page.id.replace(/-/g, "");
 
             return (
@@ -77,11 +109,6 @@ export default async function MacPage() {
                   href={`/mac/${pageId}`}
                   className="group flex items-center gap-5 py-4 -mx-2 px-2 rounded-lg hover:bg-background-secondary transition-colors duration-200"
                 >
-                  {/* Index */}
-                  <span className="text-xs font-mono tabular-nums w-7 shrink-0 text-label-secondary/40 group-hover:text-accent-info group-hover:opacity-100 transition-all duration-200">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-label-primary group-hover:text-accent-info transition-colors duration-200">
@@ -102,10 +129,19 @@ export default async function MacPage() {
                   </div>
 
                   {/* Date */}
-                  {lastEdited && (
-                    <span className="hidden sm:block text-xs text-label-secondary shrink-0 tabular-nums">
-                      {lastEdited}
-                    </span>
+                  {(createdAt || lastEdited) && (
+                    <div className="hidden sm:flex flex-col items-end gap-0.5 text-xs shrink-0 tabular-nums">
+                      {createdAt && (
+                        <span className="text-label-primary">
+                          {createdAt} 作成
+                        </span>
+                      )}
+                      {lastEdited && (
+                        <span className="text-label-secondary">
+                          {lastEdited} 更新
+                        </span>
+                      )}
+                    </div>
                   )}
 
                   {/* Arrow */}
