@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import type { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { getPage, getPageBlocks } from "@/lib/notion";
+import { blocksToMarkdown } from "@/lib/notion-markdown";
 import { NotionRenderer } from "@/components/notion/NotionRenderer";
+import { CopyMarkdownButton } from "@/components/notion/CopyMarkdownButton";
 
 export const dynamic = "force-dynamic";
 
@@ -82,9 +84,14 @@ export default async function MacDetailPage({
           <span>Mac サポート</span>
         </Link>
 
-        <h1 className="text-4xl font-bold tracking-tight text-label-tertiary leading-tight mb-4">
-          {title}
-        </h1>
+        <div className="flex items-start justify-between gap-4 mb-4">
+          <h1 className="text-4xl font-bold tracking-tight text-label-tertiary leading-tight">
+            {title}
+          </h1>
+          <div className="shrink-0 pt-2">
+            <CopyMarkdownButton markdown={blocksToMarkdown(title, blocks)} />
+          </div>
+        </div>
 
         <div className="flex flex-wrap items-center gap-2">
           {tags.map((tag) => (
