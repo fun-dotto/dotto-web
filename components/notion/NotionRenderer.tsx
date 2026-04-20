@@ -1,7 +1,53 @@
+import Link from "next/link";
 import type {
   BlockObjectResponse,
   RichTextItemResponse,
 } from "@notionhq/client/build/src/api-endpoints";
+
+function normalizeNotionPageId(raw: string): string {
+  const hex = raw.replace(/-/g, "").toLowerCase();
+  if (hex.length !== 32) return raw;
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
+function extractNotionIds(href: string): {
+  pageId: string | null;
+  blockId: string | null;
+} {
+  const matches = [
+    ...href.matchAll(
+      /([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|[0-9a-f]{32})/gi
+    ),
+  ];
+  const [first, second] = matches;
+  return {
+    pageId: first ? normalizeNotionPageId(first[1]) : null,
+    blockId: second ? normalizeNotionPageId(second[1]) : null,
+  };
+}
+
+function resolveInternalHref(item: RichTextItemResponse): string | null {
+  if (item.type === "mention" && item.mention.type === "page") {
+    const pageId = normalizeNotionPageId(item.mention.page.id);
+    const blockId = item.href
+      ? extractNotionIds(item.href).blockId
+      : null;
+    const normalizedBlock =
+      blockId && blockId !== pageId ? blockId : null;
+    return normalizedBlock ? `/mac/${pageId}#${normalizedBlock}` : `/mac/${pageId}`;
+  }
+  if (item.href) {
+    const isNotionLink =
+      item.href.startsWith("/") || /notion\.so\//i.test(item.href);
+    if (isNotionLink) {
+      const { pageId, blockId } = extractNotionIds(item.href);
+      if (pageId) {
+        return blockId ? `/mac/${pageId}#${blockId}` : `/mac/${pageId}`;
+      }
+    }
+  }
+  return null;
+}
 
 function RichText({ items }: { items: RichTextItemResponse[] }) {
   return (
@@ -21,12 +67,29 @@ function RichText({ items }: { items: RichTextItemResponse[] }) {
         if (annotations.italic) node = <em>{node}</em>;
         if (annotations.strikethrough) node = <s>{node}</s>;
         if (annotations.underline) node = <u>{node}</u>;
-        if (href) {
+
+        const internalHref = resolveInternalHref(item);
+        if (internalHref) {
+          const isHashLink = internalHref.includes("#");
+          node = isHashLink ? (
+            <a
+              href={internalHref}
+              className="text-accent-info underline hover:opacity-80"
+            >
+              {node}
+            </a>
+          ) : (
+            <Link
+              href={internalHref}
+              className="text-accent-info underline hover:opacity-80"
+            >
+              {node}
+            </Link>
+          );
+        } else if (href) {
           node = (
             <a
               href={href}
-              target="_blank"
-              rel="noopener noreferrer"
               className="text-accent-info underline hover:opacity-80"
             >
               {node}
@@ -162,6 +225,39 @@ export function NotionBlock({ block }: { block: BlockObjectResponse }) {
 
     case "divider":
       return <hr className="my-6 border-border-primary" />;
+
+    case "child_page":
+      return (
+        <p className="mb-2">
+          <Link
+            href={`/mac/${normalizeNotionPageId(block.id)}`}
+            className="text-accent-info underline hover:opacity-80"
+          >
+            {block.child_page.title || "無題"}
+          </Link>
+        </p>
+      );
+
+    case "link_to_page": {
+      const lp = block.link_to_page;
+      const targetId =
+        lp.type === "page_id"
+          ? lp.page_id
+          : lp.type === "database_id"
+            ? lp.database_id
+            : null;
+      if (!targetId) return null;
+      return (
+        <p className="mb-2">
+          <Link
+            href={`/mac/${normalizeNotionPageId(targetId)}`}
+            className="text-accent-info underline hover:opacity-80"
+          >
+            → ページを開く
+          </Link>
+        </p>
+      );
+    }
 
     case "toggle":
       return (
