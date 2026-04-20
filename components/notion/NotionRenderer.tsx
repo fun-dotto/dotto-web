@@ -3,6 +3,7 @@ import type {
   BlockObjectResponse,
   RichTextItemResponse,
 } from "@notionhq/client/build/src/api-endpoints";
+import { CopyableHeading } from "./CopyableHeading";
 
 function normalizeNotionPageId(raw: string): string {
   const hex = raw.replace(/-/g, "").toLowerCase();
@@ -121,23 +122,23 @@ export function NotionBlock({ block }: { block: BlockObjectResponse }) {
 
     case "heading_1":
       return (
-        <h1 className="mb-4 mt-8 text-3xl font-bold tracking-tight text-label-primary">
+        <CopyableHeading blockId={block.id} level={1}>
           <RichText items={block.heading_1.rich_text} />
-        </h1>
+        </CopyableHeading>
       );
 
     case "heading_2":
       return (
-        <h2 className="mb-3 mt-6 text-2xl font-semibold tracking-tight text-label-primary">
+        <CopyableHeading blockId={block.id} level={2}>
           <RichText items={block.heading_2.rich_text} />
-        </h2>
+        </CopyableHeading>
       );
 
     case "heading_3":
       return (
-        <h3 className="mb-2 mt-5 text-xl font-semibold text-label-primary">
+        <CopyableHeading blockId={block.id} level={3}>
           <RichText items={block.heading_3.rich_text} />
-        </h3>
+        </CopyableHeading>
       );
 
     case "bulleted_list_item":
@@ -277,7 +278,9 @@ export function NotionRenderer({ blocks }: { blocks: BlockObjectResponse[] }) {
   return (
     <div className="notion-content">
       {blocks.map((block) => (
-        <NotionBlock key={block.id} block={block} />
+        <div key={block.id} id={block.id} className="scroll-mt-24">
+          <NotionBlock block={block} />
+        </div>
       ))}
     </div>
   );
