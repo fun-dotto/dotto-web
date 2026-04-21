@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   description: "大学からのお知らせ一覧",
 };
 
+export const dynamic = "force-dynamic";
+
 function formatDate(iso: string): { year: string; month: string; day: string } {
   const d = new Date(iso);
   return {
