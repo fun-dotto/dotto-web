@@ -1,5 +1,9 @@
 import { getApp, getApps, initializeApp } from "firebase/app";
-import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
+import {
+  type AppCheck,
+  initializeAppCheck,
+  ReCaptchaV3Provider,
+} from "firebase/app-check";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
@@ -16,18 +20,18 @@ const appCheckDebugToken = process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
-const initializeClientAppCheck = () => {
+const initializeClientAppCheck = (): AppCheck | undefined => {
   if (typeof window === "undefined" || !appCheckSiteKey) {
-    return;
+    return undefined;
   }
 
   const appCheckGlobal = globalThis as typeof globalThis & {
-    __FIREBASE_APP_CHECK_INITIALIZED__?: boolean;
+    __FIREBASE_APP_CHECK__?: AppCheck;
     FIREBASE_APPCHECK_DEBUG_TOKEN?: string | boolean;
   };
 
-  if (appCheckGlobal.__FIREBASE_APP_CHECK_INITIALIZED__) {
-    return;
+  if (appCheckGlobal.__FIREBASE_APP_CHECK__) {
+    return appCheckGlobal.__FIREBASE_APP_CHECK__;
   }
 
   if (appCheckDebugToken) {
@@ -36,16 +40,17 @@ const initializeClientAppCheck = () => {
   }
 
   try {
-    initializeAppCheck(app, {
+    const instance = initializeAppCheck(app, {
       provider: new ReCaptchaV3Provider(appCheckSiteKey),
       isTokenAutoRefreshEnabled: true,
     });
-    appCheckGlobal.__FIREBASE_APP_CHECK_INITIALIZED__ = true;
+    appCheckGlobal.__FIREBASE_APP_CHECK__ = instance;
+    return instance;
   } catch {
-    // App Check should not block app startup.
+    return undefined;
   }
 };
 
-initializeClientAppCheck();
+export const appCheck = initializeClientAppCheck();
 
 export const auth = getAuth(app);
