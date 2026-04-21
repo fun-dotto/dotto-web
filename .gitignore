@@ -42,4 +42,4 @@ yarn-error.log*
 next-env.d.ts
 
 # generated from openapi/openapi.yaml
-/types/api.d.ts
+/src/types/api.d.ts
