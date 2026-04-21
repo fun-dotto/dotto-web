@@ -14,7 +14,8 @@ const notoSansJP = Noto_Sans_JP({
 
 export const metadata: Metadata = {
   title: "Dotto - 公立はこだて未来大学ポータルアプリ",
-  description: "Dottoは2023年12月から運用されている、公立はこだて未来大学のポータルアプリです。",
+  description:
+    "Dottoは2023年12月から運用されている、公立はこだて未来大学のポータルアプリです。",
 };
 
 export default function RootLayout({
@@ -23,10 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="ja"
-      className={`${notoSansJP.variable} h-full antialiased`}
-    >
+    <html lang="ja" className={`${notoSansJP.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <TooltipProvider>
           <AuthProvider>
@@ -34,8 +32,10 @@ export default function RootLayout({
           </AuthProvider>
         </TooltipProvider>
         <ServiceWorkerRegistration />
-        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+        {process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID && (
+          <GoogleAnalytics
+            gaId={process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID}
+          />
         )}
       </body>
     </html>

@@ -15,7 +15,8 @@ on:
           - qa
           - prod
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.inputs.environment_name }}
+  group: ${{ github.workflow }}-${{ github.ref }}-${{
+    github.event.inputs.environment_name }}
   cancel-in-progress: true
 jobs:
   set-env:
@@ -87,8 +88,7 @@ jobs:
           --build-arg NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=${{ secrets.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET }} \
           --build-arg NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }} \
           --build-arg NEXT_PUBLIC_FIREBASE_APP_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }} \
-          --build-arg NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }} \
-          --build-arg NEXT_PUBLIC_GA_MEASUREMENT_ID=${{ secrets.NEXT_PUBLIC_GA_MEASUREMENT_ID }}
+          --build-arg NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }}
       - name: Authenticate
         id: auth
         uses: google-github-actions/auth@v3
@@ -141,8 +141,9 @@ jobs:
             NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
             NEXT_PUBLIC_FIREBASE_APP_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
             NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }}
-            NEXT_PUBLIC_GA_MEASUREMENT_ID=${{ secrets.NEXT_PUBLIC_GA_MEASUREMENT_ID }}
+            NEXT_PUBLIC_FIREBASE_APPCHECK_SITE_KEY=${{ secrets.NEXT_PUBLIC_FIREBASE_APPCHECK_SITE_KEY }}
+            NEXT_PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN=${{ secrets.NEXT_PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN }}
+            NEXT_PUBLIC_API_BASE_URL=${{ vars.NEXT_PUBLIC_API_BASE_URL }}
             NOTION_TOKEN=${{ secrets.NOTION_TOKEN }}
             NOTION_MAC_DATABASE_ID=${{ secrets.NOTION_MAC_DATABASE_ID }}
-            NEXT_PUBLIC_API_BASE_URL=${{ vars.NEXT_PUBLIC_API_BASE_URL }}
           env_vars_update_strategy: overwrite
