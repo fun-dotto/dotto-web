@@ -4,6 +4,12 @@ import type { paths } from "@/types/api";
 const authMiddleware: Middleware = {
   async onRequest({ request }) {
     if (typeof window === "undefined") {
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      const token = cookieStore.get("firebase-id-token")?.value;
+      if (token) {
+        request.headers.set("Authorization", `Bearer ${token}`);
+      }
       return request;
     }
     const { auth } = await import("@/lib/firebase");
@@ -18,6 +24,12 @@ const authMiddleware: Middleware = {
 const appCheckMiddleware: Middleware = {
   async onRequest({ request }) {
     if (typeof window === "undefined") {
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      const token = cookieStore.get("firebase-app-check-token")?.value;
+      if (token) {
+        request.headers.set("X-Firebase-AppCheck", token);
+      }
       return request;
     }
     const [{ appCheck }, { getToken }] = await Promise.all([
@@ -39,8 +51,13 @@ const appCheckMiddleware: Middleware = {
   },
 };
 
+const baseUrl =
+  typeof window === "undefined"
+    ? process.env.NEXT_PUBLIC_API_BASE_URL
+    : "/api/bff";
+
 export const api = createClient<paths>({
-  baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
+  baseUrl,
   querySerializer: {
     array: { style: "form", explode: false },
   },

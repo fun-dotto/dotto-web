@@ -4,7 +4,7 @@ import { auth } from "@/lib/firebase";
 import {
   GoogleAuthProvider,
   User,
-  onAuthStateChanged,
+  onIdTokenChanged,
   signInWithPopup,
   signOut,
 } from "firebase/auth";
@@ -19,12 +19,43 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+async function getAppCheckToken(): Promise<string | undefined> {
+  const [{ appCheck }, { getToken }] = await Promise.all([
+    import("@/lib/firebase"),
+    import("firebase/app-check"),
+  ]);
+  if (!appCheck) return undefined;
+  try {
+    const { token } = await getToken(appCheck, false);
+    return token;
+  } catch {
+    return undefined;
+  }
+}
+
+async function syncSessionCookie(user: User | null) {
+  if (user) {
+    const [idToken, appCheckToken] = await Promise.all([
+      user.getIdToken(),
+      getAppCheckToken(),
+    ]);
+    await fetch("/api/auth/session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ idToken, appCheckToken }),
+    });
+  } else {
+    await fetch("/api/auth/session", { method: "DELETE" });
+  }
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onIdTokenChanged(auth, async (user) => {
+      await syncSessionCookie(user);
       setUser(user);
       setLoading(false);
     });
