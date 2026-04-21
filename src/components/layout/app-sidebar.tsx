@@ -13,7 +13,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { HomeIcon, MonitorIcon } from "lucide-react";
+import { BellIcon, HomeIcon, MonitorIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -21,6 +21,7 @@ import DottoIcon from "@/app/icon1024.png";
 
 const navItems = [
   { title: "ホーム", href: "/", icon: HomeIcon },
+  { title: "お知らせ", href: "/announcements", icon: BellIcon },
   { title: "Mac サポート", href: "/mac", icon: MonitorIcon },
 ];
 
